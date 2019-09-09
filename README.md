@@ -1,5 +1,43 @@
 # Holidu frontend developer interview assignment
 
+## My Updates
+### Prime tech stack
+- node v12.9.0
+- yarn 1.15.2
+- React 16.9.0
+
+In the client project directory, you can run:
+
+### `yarn start`
+
+Runs the app in the development mode.<br>
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+### `yarn test`
+
+Launches the test runner using the jest.config.js<br>
+
+### `yarn lint`
+
+Tests the code on linting, formatting challenges.
+
+### `yarn build`
+
+Builds the app for production to the `build` folder.<br> Your app is ready to be deployed!
+
+### Troubleshooting
+
+If you face issues or errors in `yarn start` then you can run code saved in  `build` folder by copying it to any Web Server.
+
+## More info
+
+Other packages used are:
+- Husky to commit the code with validations like linting.
+- Eslint to check the code.
+- Enzyme to test the components.
+- Jest for unit testing.
+- Added Rule in .eslintrc.json to exclude PropTypes: react/forbid-prop-types . Please excuse me to skip prop-types due to lack of time.
+
 Hi there! Congratulations on making it to the next step!
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and is using [Material-UI](https://material-ui.com/) and [Recharts](http://recharts.org/) to save you some time.

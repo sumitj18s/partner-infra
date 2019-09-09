@@ -1,42 +1,50 @@
-const R = require('ramda')
-
+const R = require('ramda');
 
 function getUniqueColumnValues(dataSource, column) {
   const output = [];
-  dataSource.length > 0 && dataSource.map((e) => {
-    if (e[column])
-      output.push(e[column])
-  });
+
+  if (dataSource.length > 0) {
+    dataSource.forEach(e => {
+      if (e[column])
+        output.push(e[column]);
+    });
+  }
+
   const uniq = output.length > 0 && R.uniq(output);
-  return uniq || undefined;
+  return uniq || [];
 }
 
 function getAverageScore(dataSource, column, score) {
-  let dataSet = [], output = [], avg = 0, columnGroup = [];
+  if (!dataSource) return null;
+  const dataSet = [];
+  const output = [];
+  let average = 0;
+  let columnGroup = [];
 
-  columnGroup = getUniqueColumnValues(dataSource, column)
-  columnGroup.length > 0 && columnGroup.map(element => {
-    const result = dataSource.filter(filter => filter[column] == element)
-    const scoreValues = getUniqueColumnValues(result, score)
-    dataSet.push({ uniqueColumn: element, score: scoreValues })
-  })
-  dataSet.length > 0 && dataSet.map(element => {
-    const score = element.score;
-    let sum = 0;
-    if (score) {
-      for (let i = 0; i < score.length; i++) {
-        sum += parseInt(score[i], 10);
+  columnGroup = getUniqueColumnValues(dataSource, column);
+
+  if (columnGroup.length > 0) {
+    columnGroup.forEach(element => {
+      const result = dataSource.filter(filter => filter[column] === element);
+      const scoreValues = getUniqueColumnValues(result, score);
+      dataSet.push({ uniqueColumn: element, score: scoreValues });
+    });
+  }
+
+  if (dataSet.length > 0) {
+    dataSet.forEach(element => {
+      const getScore = element.score;
+      if (getScore.length) {
+        const sum = getScore.reduce((accumulator, currentValue) => accumulator + currentValue);
+        average = Math.floor(sum / getScore.length);
+        output.push({ uniqueColumn: element.uniqueColumn, average });
+      } else {
+        output.push({ uniqueColumn: element.uniqueColumn, average: 'n/a' });
       }
+    });
+  }
 
-      avg = sum / score.length;
-      output.push({ uniqueColumn: element.uniqueColumn, avg })
-    }
-    else{
-      output.push({ uniqueColumn: element.uniqueColumn, avg:''})
-    }
-  })
   return output || undefined;
 }
-// console.log(getAverageScore(data, 'country', 'score'));
-// console.log(getAverageScore(data,'gender', 'score'));
-export default getAverageScore
+
+export default getAverageScore;

@@ -17,10 +17,10 @@ export const mainListItems = (
   </div>
 );
 
-export const secondaryListItems = 
+export const secondaryListItems = (
   <div>
     <ListSubheader inset>Saved reports</ListSubheader>
-    <ListItem button  >
+    <ListItem button>
       <ListItemIcon>
         <AssignmentIcon />
       </ListItemIcon>
@@ -33,4 +33,4 @@ export const secondaryListItems =
       <ListItemText primary="Scores by country" />
     </ListItem>
   </div>
-
+);

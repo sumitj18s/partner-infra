@@ -16,7 +16,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
 import Chart from './Chart';
-import {BarChartContainer, ComposedChartContainer} from './Components/BarChartContainer';
+import getData from './API';
+
+import {
+  BarChartContainer,
+  PieChartContainer,
+} from './Components/ChartContainer';
 import ScoreTable from './ScoreTable';
 
 const drawerWidth = 240;
@@ -103,17 +108,20 @@ const useStyles = makeStyles(theme => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const [menu, setMenu] = React.useState('');
+  const [menu, setMenu] = React.useState('Dashboard');
+  const [data, setData] = React.useState([]);
 
   React.useEffect(() => {
-    // Update the document title using the browser API
-    console.log({menu});
-  }, [menu]);
+    const url = '/api/people.json';
+    (async () => {
+      const result = await getData(url);
+      setData(result);
+    })();
+  }, []);
 
-  const clickMenu=(d)=>{
-    console.log({a: d});
-    setMenu('A')
-  }
+  const clickMenu = d => {
+    setMenu(d.target.textContent);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -126,18 +134,30 @@ export default function Dashboard() {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <AppBar
+        position="absolute"
+        className={clsx(classes.appBar, open && classes.appBarShift)}
+      >
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+            className={clsx(
+              classes.menuButton,
+              open && classes.menuButtonHidden,
+            )}
           >
             <MenuIcon />
           </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+          >
             Holidu Interview Dashboard
           </Typography>
         </Toolbar>
@@ -155,20 +175,48 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
+        <List onClick={clickMenu}>{mainListItems}</List>
         <Divider />
         <List onClick={clickMenu}>{secondaryListItems}</List>
       </Drawer>
+
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Paper className={fixedHeightPaper}>
-                <BarChartContainer />
-                <ComposedChartContainer />
-              </Paper>
-            </Grid>
+            {menu === 'Dashboard' && (
+              <Grid item xs={12}>
+                <Paper className={fixedHeightPaper}>
+                  <Chart />
+                </Paper>
+              </Grid>
+            )}
+
+            {menu === 'Scores by gender' && (
+              <Grid item xs={12}>
+                <Paper className={fixedHeightPaper}>
+                  <PieChartContainer
+                    data={data}
+                    columnFilter="gender"
+                    columnAggregate="score"
+                  />
+                </Paper>
+              </Grid>
+            )}
+
+            {menu === 'Scores by country' && (
+              <Grid item xs={12}>
+                <Paper className={fixedHeightPaper}>
+                  <BarChartContainer
+                    data={data}
+                    columnFilter="country"
+                    columnAggregate="score"
+                  />
+                </Paper>
+              </Grid>
+            )}
+
+            {/* Recent scores */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
                 <ScoreTable />

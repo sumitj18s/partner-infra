@@ -4,6 +4,6 @@ import './App.css';
 
 export default function App() {
   return (
-      <Dashboard/>
+    <Dashboard />
   );
 }
